@@ -22,7 +22,7 @@ jobs:
 
     - name: Update kubeconfig
       run: |
-        aws eks --region eu-west-1 update-kubeconfig --name personal-finance-management-cluster
+        aws eks --region eu-west-1 update-kubeconfig --name my-cluster
 
     - name: Deploy to EKS
       run: |
