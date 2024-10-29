@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: personal-finance-management
-          image: personal-finance-management:latest
+          image: shaybar6/personal-finance-management:latest
           imagePullPolicy: IfNotPresent
           env:
             - name: AWS_ACCESS_KEY_ID
