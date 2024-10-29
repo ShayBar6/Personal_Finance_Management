@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Report</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1000px; /* Increased width */
+            max-height: 700px;
+            margin: 50px auto;  /* Adjusted margin */
+            padding: 30px;  /* Increased padding */
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h1, h2 {
+            color: #333;
+            margin-bottom: 20px;
+            margin-top: 5px;
+        }
+       .container img {
+            width: 100%; /* Make image take full width of the container */
+            height: 100%; /* Make image take full height of the container */
+            object-fit: contain; /* Maintain aspect ratio while fitting */
+            border-radius: 10px; /* Optional: round the image corners */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Expense Report</h1>
+            {% if message %}
+                <p class="message">{{ message }}</p>  <!-- Display error message if present -->
+            {% else %}
+                <iframe src="{{ url_for('dashboard', chart_filename=chart_filename) }}" width="1000px" height="600px"></iframe>
+            {% endif %}
+    </div>
+
+</body>
+</html>

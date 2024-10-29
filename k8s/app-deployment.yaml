@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: personal-finance-management
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: personal-finance-management
+  template:
+    metadata:
+      labels:
+        app: personal-finance-management
+    spec:
+      containers:
+        - name: personal-finance-management
+          image: personal-finance-management:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              value: "${{ secrets.AWS_ACCESS_KEY_ID }}"
+            - name: AWS_SECRET_ACCESS_KEY
+              value: "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
+            - name: AWS_DEFAULT_REGION
+              value: "${{ secrets.AWS_DEFAULT_REGION }}"
+          ports:
+            - containerPort: 5000
