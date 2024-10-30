@@ -24,6 +24,14 @@ jobs:
       run: |
         aws eks --region eu-west-1 update-kubeconfig --name my-cluster
 
+    - name: Create Kubernetes Secret
+      run: |
+        kubectl create secret generic my-secret \
+          --from-literal=aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }} \
+          --from-literal=aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
+          --from-literal=aws_default_region=${{ secrets.AWS_DEFAULT_REGION }} \
+          --dry-run=client -o yaml | kubectl apply -f -
+
     - name: Deploy to EKS
       run: |
         kubectl apply -f k8s/app-deployment.yaml
