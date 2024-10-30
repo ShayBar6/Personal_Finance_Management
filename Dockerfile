@@ -21,10 +21,5 @@ COPY . .
 # Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Set the environment variable for Flask
-ENV FLASK_APP=main.py
-# Make the server accessible outside the container
-ENV FLASK_RUN_HOST=0.0.0.0
-
-# Command to run the application
-CMD ["python", "main.py"]
+# Command to run the application using Gunicorn
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "main:app"]
