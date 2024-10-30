@@ -27,4 +27,4 @@ ENV FLASK_APP=main.py
 ENV FLASK_RUN_HOST=0.0.0.0
 
 # Command to run the application
-CMD ["python", "app.py"]
+CMD ["python", "main.py"]
