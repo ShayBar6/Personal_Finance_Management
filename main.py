@@ -24,8 +24,7 @@ dynamodb = boto3.resource(
 )
 
 # Initialize the DynamoDB client
-user_expenses_table = dynamodb.Table('user_expenses')  # Replace with your actual table name
-
+user_expenses_table = dynamodb.Table('user_expenses')
 
 @app.route('/')
 def welcome():
@@ -82,4 +81,4 @@ def dashboard():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000)
