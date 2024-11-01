@@ -6,33 +6,49 @@ on:
       - main  
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
-
+  build:
+    runs-on: self-hosted
+    if: |
+      github.event_name == 'push' && (
+        contains(github.event.head_commit.message, 'src/') || 
+        contains(github.event.head_commit.message, 'Dockerfile')
+      )
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Set up AWS CLI
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+      - name: Build Docker Image
+        run: |
+          docker build -t shaybar6/personal-finance-management:${{ github.sha }} .
 
-    - name: Update kubeconfig
-      run: |
-        aws eks --region eu-west-1 update-kubeconfig --name my-cluster
+      - name: Log in to Docker Hub
+        env:
+          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+          DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+        run: |
+          echo "${DOCKER_HUB_TOKEN}" | docker login -u "${DOCKER_HUB_USERNAME}" --password-stdin
 
-    - name: Create Kubernetes Secret
-      run: |
-        kubectl create secret generic my-secret \
-          --from-literal=aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }} \
-          --from-literal=aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
-          --from-literal=aws_default_region=${{ secrets.AWS_DEFAULT_REGION }} \
-          --dry-run=client -o yaml | kubectl apply -f -
+      - name: Push Docker Image to Docker Hub
+        run: |
+          docker push shaybar6/personal-finance-management:${{ github.sha }}
 
-    - name: Deploy to EKS
-      run: |
-        kubectl apply -f k8s/app-deployment.yaml
-        kubectl apply -f k8s/app-service.yaml
+  deploy:
+    runs-on: self-hosted
+    needs: build  # Only run if build completes successfully
+    steps:
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+
+      - name: Update kubeconfig
+        run: |
+          aws eks --region eu-west-1 update-kubeconfig --name my-cluster
+
+      - name: Apply Kubernetes Configurations
+        run: |
+          kubectl apply -f k8s/app-deployment.yaml
+          kubectl set image deployment/my-deployment my-container=shaybar6/personal-finance-management:${{ github.sha }}
+          kubectl apply -f k8s/app-service.yaml

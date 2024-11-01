@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: personal-finance-management
+  name: my-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: personal-finance-management
+      app: my-deployment
   template:
     metadata:
       labels:
-        app: personal-finance-management
+        app: my-deployment
     spec:
       containers:
-      - name: personal-finance-management
-        image: shaybar6/personal-finance-management:latest
+      - name: my-container
+        image: shaybar6/personal-finance-management  # Tag will be dynamically set through CI/CD pipeline
         ports:
         - containerPort: 5000
         env:
