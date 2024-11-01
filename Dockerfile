@@ -5,7 +5,8 @@ FROM python:3.12-slim
 WORKDIR /usr/src/app
 
 # Install any necessary packages (adjust as needed)
-RUN apt-get update && \
+RUN sed -i 's|http://deb.debian.org|http://deb.debian.org|g' /etc/apt/sources.list && \
+    apt-get update && \
     apt-get install -y --no-install-recommends \
         curl \
         bash \
