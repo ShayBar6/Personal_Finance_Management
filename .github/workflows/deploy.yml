@@ -19,7 +19,7 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build -t shaybar6/personal-finance-management .
+          docker build -t shaybar6/personal-finance-management:v1.0 .
 
       - name: Log in to Docker Hub
         env:
@@ -30,7 +30,7 @@ jobs:
 
       - name: Push Docker Image to Docker Hub
         run: |
-          docker push shaybar6/personal-finance-management
+          docker push shaybar6/personal-finance-management:v1.0
 
   deploy:
     runs-on: self-hosted
@@ -47,6 +47,7 @@ jobs:
         run: |
           aws eks --region eu-west-1 update-kubeconfig --name my-cluster
 
+      # Apply Kubernetes Configurations without logging into Docker Hub
       - name: Apply Kubernetes Configurations
         run: |
           kubectl apply -f k8s/app-deployment.yaml
