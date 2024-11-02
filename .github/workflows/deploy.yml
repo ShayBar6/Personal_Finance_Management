@@ -53,7 +53,7 @@ jobs:
             --docker-username="${{ secrets.DOCKER_HUB_USERNAME }}" \
             --docker-password="${{ secrets.DOCKER_HUB_TOKEN }}" \
             --docker-server=https://index.docker.io/v1/ \
-            --docker-email="<your_email>" --dry-run=client -o yaml | kubectl apply -f -
+            --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Create or Update AWS Secret in Kubernetes
         run: |
