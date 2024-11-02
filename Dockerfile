@@ -5,16 +5,15 @@ FROM python:3.12-slim
 WORKDIR /usr/src/app
 
 # Install any necessary packages (adjust as needed)
-RUN sed -i 's|http://deb.debian.org|http://deb.debian.org|g' /etc/apt/sources.list && \
-    apt-get update && \
+RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         curl \
         bash \
         build-essential \
         libffi-dev \
         libssl-dev \
-        gcc \
-    && rm -rf /var/lib/apt/lists/*
+        gcc && \
+    rm -rf /var/lib/apt/lists/*
 
 # Copy the current directory contents into the container at /usr/src/app
 COPY . .
