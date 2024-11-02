@@ -47,7 +47,16 @@ jobs:
         run: |
           aws eks --region eu-west-1 update-kubeconfig --name my-cluster
 
-      # Apply Kubernetes Configurations without logging into Docker Hub
+      - name: Create or Update Kubernetes Secret
+        run: |
+          kubectl create secret generic my-secret \
+            --from-literal=aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }} \
+            --from-literal=aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
+            --from-literal=aws_default_region=${{ secrets.AWS_DEFAULT_REGION }} \
+            --from-literal=docker_hub_username=${{ secrets.DOCKER_HUB_USERNAME }} \
+            --from-literal=docker_hub_token=${{ secrets.DOCKER_HUB_TOKEN }} \
+            --dry-run=client -o yaml | kubectl apply -f -
+
       - name: Apply Kubernetes Configurations
         run: |
           kubectl apply -f k8s/app-deployment.yaml
