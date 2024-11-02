@@ -33,3 +33,13 @@ spec:
             secretKeyRef:
               name: my-secret
               key: aws_default_region
+        - name: DOCKER_HUB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: my-secret
+              key: docker_hub_username
+        - name: DOCKER_HUB_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: my-secret
+              key: docker_hub_token
