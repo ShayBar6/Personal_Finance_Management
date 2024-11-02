@@ -19,7 +19,7 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build -t shaybar6/personal-finance-management:${{ github.sha }} .
+          docker build -t shaybar6/personal-finance-management .
 
       - name: Log in to Docker Hub
         env:
@@ -30,7 +30,7 @@ jobs:
 
       - name: Push Docker Image to Docker Hub
         run: |
-          docker push shaybar6/personal-finance-management:${{ github.sha }}
+          docker push shaybar6/personal-finance-management
 
   deploy:
     runs-on: self-hosted
@@ -46,18 +46,6 @@ jobs:
       - name: Update kubeconfig
         run: |
           aws eks --region eu-west-1 update-kubeconfig --name my-cluster
-
-      - name: Log in to Docker Hub
-        env:
-          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-          DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
-        run: |
-          echo "${DOCKER_HUB_TOKEN}" | docker login -u "${DOCKER_HUB_USERNAME}" --password-stdin
-
-      # Update the deployment YAML with the unique tag
-      - name: Update Deployment YAML
-        run: |
-          sed -i "s|TAG_PLACEHOLDER|${{ github.sha }}|g" k8s/app-deployment.yaml
 
       - name: Apply Kubernetes Configurations
         run: |

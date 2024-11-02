@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: my-container
-        image: shaybar6/personal-finance-management:TAG_PLACEHOLDER  # this will be dynamically generated through workflow file
+        image: shaybar6/personal-finance-management
         ports:
         - containerPort: 5000
         env:
