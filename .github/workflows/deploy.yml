@@ -47,8 +47,19 @@ jobs:
         run: |
           aws eks --region eu-west-1 update-kubeconfig --name my-cluster
 
+      - name: Log in to Docker Hub
+        env:
+          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+          DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+        run: |
+          echo "${DOCKER_HUB_TOKEN}" | docker login -u "${DOCKER_HUB_USERNAME}" --password-stdin
+
+      # Update the deployment YAML with the unique tag
+      - name: Update Deployment YAML
+        run: |
+          sed -i "s|TAG_PLACEHOLDER|${{ github.sha }}|g" k8s/app-deployment.yaml
+
       - name: Apply Kubernetes Configurations
         run: |
           kubectl apply -f k8s/app-deployment.yaml
-          kubectl set image deployment/my-deployment my-container=shaybar6/personal-finance-management:${{ github.sha }}
           kubectl apply -f k8s/app-service.yaml

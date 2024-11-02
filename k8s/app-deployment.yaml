@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: my-container
-        image: shaybar6/personal-finance-management  # Tag will be dynamically set through CI/CD pipeline
+        image: shaybar6/personal-finance-management:TAG_PLACEHOLDER  # this will be dynamically generated through workflow file
         ports:
         - containerPort: 5000
         env:
