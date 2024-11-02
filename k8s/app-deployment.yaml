@@ -21,25 +21,27 @@ spec:
         - name: AWS_ACCESS_KEY_ID
           valueFrom:
             secretKeyRef:
-              name: my-secret
+              name: aws-secret
               key: aws_access_key_id
         - name: AWS_SECRET_ACCESS_KEY
           valueFrom:
             secretKeyRef:
-              name: my-secret
+              name: aws-secret
               key: aws_secret_access_key
         - name: AWS_DEFAULT_REGION
           valueFrom:
             secretKeyRef:
-              name: my-secret
+              name: aws-secret
               key: aws_default_region
         - name: DOCKER_HUB_USERNAME
           valueFrom:
             secretKeyRef:
-              name: my-secret
+              name: dockerhub-secret
               key: docker_hub_username
         - name: DOCKER_HUB_TOKEN
           valueFrom:
             secretKeyRef:
-              name: my-secret
+              name: dockerhub-secret
               key: docker_hub_token
+      imagePullSecrets:
+      - name: dockerhub-secret

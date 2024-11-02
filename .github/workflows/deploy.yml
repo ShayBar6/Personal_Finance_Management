@@ -45,16 +45,22 @@ jobs:
 
       - name: Update kubeconfig
         run: |
-          aws eks --region eu-west-1 update-kubeconfig --name my-cluster
+          aws eks --region ${{ secrets.AWS_DEFAULT_REGION }} update-kubeconfig --name my-cluster
 
-      - name: Create or Update Kubernetes Secret
+      - name: Create or Update Docker Hub Secret in Kubernetes
         run: |
-          kubectl create secret generic my-secret \
-            --from-literal=aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }} \
-            --from-literal=aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
-            --from-literal=aws_default_region=${{ secrets.AWS_DEFAULT_REGION }} \
-            --from-literal=docker_hub_username=${{ secrets.DOCKER_HUB_USERNAME }} \
-            --from-literal=docker_hub_token=${{ secrets.DOCKER_HUB_TOKEN }} \
+          kubectl create secret docker-registry dockerhub-secret \
+            --docker-username="${{ secrets.DOCKER_HUB_USERNAME }}" \
+            --docker-password="${{ secrets.DOCKER_HUB_TOKEN }}" \
+            --docker-server=https://index.docker.io/v1/ \
+            --docker-email="<your_email>" --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: Create or Update AWS Secret in Kubernetes
+        run: |
+          kubectl create secret generic aws-secret \
+            --from-literal=aws_access_key_id="${{ secrets.AWS_ACCESS_KEY_ID }}" \
+            --from-literal=aws_secret_access_key="${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
+            --from-literal=aws_default_region="${{ secrets.AWS_DEFAULT_REGION }}" \
             --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Apply Kubernetes Configurations
